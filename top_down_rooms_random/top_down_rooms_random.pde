@@ -7,9 +7,7 @@ Room[][] rooms = new Room[noOfRooms][noOfRooms];
 
 void setup(){
   size(640, 480);
-  for(int i = 0; i < noOfRooms; i++){
-    createRooms();
-  }
+  createRooms();
 }
 
 void draw(){
