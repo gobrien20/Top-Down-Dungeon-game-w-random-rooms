@@ -46,11 +46,11 @@ void createRooms(){
       for(int j = 1; j < noOfRooms -1; j++){
         if(rooms[i][j] != null && lim <= noOfRooms){
           if(rooms[i][j].left && rooms[i][j -1] == null){
-            rooms[i -1][j] = new Room((random(1) < 0.5), true, (random(1) < 0.5), (random(1) < 0.5), i -1, j);
+            rooms[i][j -1] = new Room((random(1) < 0.5), true, (random(1) < 0.5), (random(1) < 0.5), i -1, j);
             lim++;
           }
           if(rooms[i][j].right && rooms[i][j +1] == null){
-            rooms[i -1][j] = new Room(true, (random(1) < 0.5), (random(1) < 0.5), (random(1) < 0.5), i +1, j);
+            rooms[i][j +1] = new Room(true, (random(1) < 0.5), (random(1) < 0.5), (random(1) < 0.5), i +1, j);
             lim++;
           }
           if(rooms[i][j].top && rooms[i -1][j] == null){
@@ -58,7 +58,7 @@ void createRooms(){
             lim++;
           }
           if(rooms[i][j].bottom && rooms[i +1][j] == null){
-            rooms[i -1][j] = new Room((random(1) < 0.5), (random(1) < 0.5), true, (random(1) < 0.5), i, j + 1);
+            rooms[i +1][j] = new Room((random(1) < 0.5), (random(1) < 0.5), true, (random(1) < 0.5), i, j + 1);
             lim++;
           }
         }
