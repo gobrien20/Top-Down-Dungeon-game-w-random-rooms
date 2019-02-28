@@ -1,20 +1,29 @@
-int noOfRooms = 5;
+int noOfRooms = 10;
 float pixelsMoved = 0;
 boolean isMovingx = false;
 boolean isMovingy = false;
 int xdir, ydir;
+float shiftAmount = 10;
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
+Player player;
 
 void setup(){
   size(640, 480);
-  createRooms();
+  player = new Player(width * 0.5, height * 0.5);
+  for(int i = 0; i < noOfRooms; i++){
+    createRooms();
+  }
+  checkRooms();
 }
 
 void draw(){
   background(0);
+  player.update();
+  player.show();
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
+        rooms[i][j].checkCollisions();
         rooms[i][j].show();
       }
     }
@@ -71,33 +80,47 @@ void keyPressed(){
   if(isMovingx || isMovingy){
   }else{
     if(keyCode == UP){
-      isMovingy = true;
-      xdir = 0;
-      ydir = -1;
+      player.pdir = new PVector(0, -1);
     }else if(keyCode == DOWN){
-      isMovingy = true;
-      xdir = 0;
-      ydir = 1;
+      player.pdir = new PVector(0, 1);
     }else if(keyCode == LEFT){
-      isMovingx = true;
-      xdir = -1;
-      ydir = 0;
+      player.pdir = new PVector(-1, 0);
     }else if(keyCode == RIGHT){
-      isMovingx = true;
-      xdir = 1;
-      ydir = 0;
+      player.pdir = new PVector(1, 0);
     }
   }
+}
+
+void keyReleased(){
+  player.pdir.mult(0);
 }
 
 void move(int xdir, int ydir){
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
-        rooms[i][j].xshift += xdir * 10;
-        rooms[i][j].yshift += ydir * 10;
+        rooms[i][j].xshift += xdir * shiftAmount;
+        rooms[i][j].yshift += ydir * shiftAmount;
       }
     }
   }
-  pixelsMoved += 10;
+  pixelsMoved += shiftAmount;
+}
+
+void checkRooms(){
+  for(int i = 1; i < noOfRooms -1; i++){
+    for(int j = 1; j < noOfRooms -1; j++){
+      if(rooms[i][j] != null){
+        if(rooms[i][j].left && !rooms[i -1][j].right){
+          rooms[i -1][j].right = true;
+        }else if(rooms[i][j].right && !rooms[i +1][j].left){
+          rooms[i +1][j].left = true;
+        }else if(rooms[i][j].top && !rooms[i][j -1].bottom){
+          rooms[i][j -1].bottom = true;
+        }else if(rooms[i][j].bottom && !rooms[i][j +1].top){
+          rooms[i][j +1].top = true;
+        }
+      }
+    }
+  }
 }

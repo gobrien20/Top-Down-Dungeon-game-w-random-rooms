@@ -1,8 +1,8 @@
 class Room{
-  float gap = 2;
-  float w = 2;
-  float xsize = width /5;
-  float ysize = height /5;
+  float gap = 25;
+  float w = 20;
+  float xsize = width;
+  float ysize = height;
   float xshift = 0;
   float yshift = 0;
   boolean left, right, top, bottom;
@@ -23,7 +23,7 @@ class Room{
     pushMatrix();
     fill(255);
     noStroke();
-    translate(xpos * xsize - (xsize * 0.5) + xshift, ypos * ysize - (ysize * 0.5) + yshift);
+    translate(xpos * xsize - (xsize * 2) + xshift, ypos * ysize - (ysize * 2) + yshift);
     rectMode(CORNERS);
     if(left){
       rect(0, 0, w, ysize * 0.5 - gap);
@@ -50,5 +50,25 @@ class Room{
       rect(0, ysize - w, xsize, ysize);
     }
     popMatrix();
+  }
+  
+  void checkCollisions(){
+    if(player.x < 0){
+      isMovingx = true;
+      xdir = -1;
+      ydir = 0;
+    }else if(player.x > xsize){
+      isMovingx = true;
+      xdir = 1;
+      ydir = 0;
+    }else if(player.y < 0){
+      isMovingy = true;
+      xdir = 0;
+      ydir = 1;
+    }else if(player.y > height){
+      isMovingy = true;
+      xdir = 0;
+      ydir = -1;
+    }
   }
 }
