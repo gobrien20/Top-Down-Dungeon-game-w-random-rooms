@@ -53,22 +53,38 @@ class Room{
   }
   
   void checkCollisions(){
-    if(player.x < 0){
-      isMovingx = true;
-      xdir = -1;
-      ydir = 0;
-    }else if(player.x > xsize){
-      isMovingx = true;
-      xdir = 1;
-      ydir = 0;
-    }else if(player.y < 0){
-      isMovingy = true;
-      xdir = 0;
-      ydir = 1;
-    }else if(player.y > height){
-      isMovingy = true;
-      xdir = 0;
-      ydir = -1;
+    if(player.x <= w ){
+      if (left && player.y < ysize * 0.5 + gap && player.y > ysize * 0.5 - gap){
+        isMovingx = true;
+        xdir = 1;
+        ydir = 0;
+      }else{
+        player.x = w;
+      }
+    }else if(player.x >= xsize - w - player.w){
+      if (right && player.y < ysize * 0.5 + gap && player.y > ysize * 0.5 - gap){
+        isMovingx = true;
+        xdir = -1;
+        ydir = 0;
+      }else{
+        player.x = xsize - w - player.w;
+      }
+    }else if(player.y <= w){
+      if (top && player.x < xsize * 0.5 + gap && player.x > xsize * 0.5 - gap){
+        isMovingy = true;
+        xdir = 0;
+        ydir = 1;
+      }else{
+        player.y = w;
+      }
+    }else if(player.y >= ysize - w - player.w){
+      if (bottom && player.x < xsize * 0.5 + gap && player.x > xsize * 0.5 - gap){
+        isMovingy = true;
+        xdir = 0;
+        ydir = -1;
+      }else{
+        player.y = ysize - w - player.w;
+      }
     }
   }
 }
