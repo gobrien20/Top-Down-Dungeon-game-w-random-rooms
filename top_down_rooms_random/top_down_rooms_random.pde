@@ -4,6 +4,7 @@ boolean isMovingx = false;
 boolean isMovingy = false;
 int xdir, ydir;
 float shiftAmount = 10;
+int timeAfterMove = 60;
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
 Player player;
 
@@ -23,7 +24,9 @@ void draw(){
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
-        rooms[i][j].checkCollisions();
+        if((!isMovingx || !isMovingy) && timeAfterMove >= 60){
+          rooms[i][j].checkCollisions();
+        }
         rooms[i][j].show();
       }
     }
@@ -32,6 +35,7 @@ void draw(){
     if(pixelsMoved < width){
       move(xdir, ydir);
     }else{
+      timeAfterMove = 0;
       isMovingx = false;
       pixelsMoved = 0;
     }
@@ -39,10 +43,12 @@ void draw(){
     if(pixelsMoved < height){
       move(xdir, ydir);
     }else{
+      timeAfterMove = 0;
       isMovingy = false;
       pixelsMoved = 0;
     }
   }
+  timeAfterMove++;
 }
 
 void createRooms(){
@@ -108,17 +114,17 @@ void move(int xdir, int ydir){
 }
 
 void checkRooms(){
-  for(int i = 1; i < noOfRooms -1; i++){
-    for(int j = 1; j < noOfRooms -1; j++){
+  for(int i = 2; i < noOfRooms -2; i++){
+    for(int j = 2; j < noOfRooms -2; j++){
       if(rooms[i][j] != null){
         if(rooms[i][j].left && !rooms[i -1][j].right){
           rooms[i -1][j].right = true;
         }else if(rooms[i][j].right && !rooms[i +1][j].left){
-          rooms[i +1][j].left = true;
+          rooms[i -1][j].left = true;
         }else if(rooms[i][j].top && !rooms[i][j -1].bottom){
-          rooms[i][j -1].bottom = true;
+          rooms[i -1][j].bottom = true;
         }else if(rooms[i][j].bottom && !rooms[i][j +1].top){
-          rooms[i][j +1].top = true;
+          rooms[i -1][j].top = true;
         }
       }
     }

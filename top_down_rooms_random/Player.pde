@@ -25,8 +25,8 @@ class Player{
   }
   
   void walk(){
-    x += pdir.x * 10;
-    y += pdir.y * 10;
+    x += pdir.x * 3;
+    y += pdir.y * 3;
   }
   
   void doorShift(){
@@ -42,5 +42,6 @@ class Player{
       }else{
         y -= shiftAmount;
       }
+    }
   }
 }
