@@ -31,9 +31,16 @@ class Player{
   
   void doorShift(){
     if(isMovingx){
-      x += shiftAmount;
+      if(xdir > 0){
+        x += shiftAmount;
+      }else{
+        x -= shiftAmount;
+      }
     }else if(isMovingy){
-      y += shiftAmount
-
+     if(ydir > 0){
+        y += shiftAmount;
+      }else{
+        y -= shiftAmount;
+      }
   }
 }
