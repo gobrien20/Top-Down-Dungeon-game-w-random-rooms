@@ -7,20 +7,47 @@ float shiftAmount = 10;
 int timeAfterMove = 60;
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
 Player player;
+ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
+ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+float xpositions[] = new float[2];
+float ypositions[] = new float[2];
 
 void setup(){
   size(640, 480);
   player = new Player(width * 0.5, height * 0.5);
+  xpositions[0] = 50;
+  xpositions[1] = width - 50;
+  ypositions[0] = 50;
+  ypositions[1] = height - 50;
+  
+  for(int i = 0; i < floor(random(5, 10)); i ++){
+    enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
+  }
+  
   for(int i = 0; i < noOfRooms; i++){
     createRooms();
   }
-  checkRooms();
+  //checkRooms();
 }
 
 void draw(){
   background(0);
+  
+  checkCollisions();
+  
+  for(Projectile projectile: projectiles){
+    projectile.update();
+    projectile.show();
+  }
+  
   player.update();
   player.show();
+  
+  for(Enemy enemy: enemies){
+    enemy.update();
+    enemy.show();
+  }
+  
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
@@ -31,23 +58,37 @@ void draw(){
       }
     }
   }
+  
   if(isMovingx){
     if(pixelsMoved < width){
+      for(int i = enemies.size() - 1; i >= 0; i--){
+        enemies.remove(i);
+      }
       move(xdir, ydir);
     }else{
       timeAfterMove = 0;
       isMovingx = false;
       pixelsMoved = 0;
+      for(int i = 0; i < floor(random(5)); i ++){
+        enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
+      }
     }
   }else if(isMovingy){
     if(pixelsMoved < height){
+      for(int i = enemies.size() - 1; i >= 0; i--){
+        enemies.remove(i);
+      }
       move(xdir, ydir);
     }else{
       timeAfterMove = 0;
       isMovingy = false;
       pixelsMoved = 0;
+      for(int i = 0; i < floor(random(5)); i ++){
+        enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
+      }
     }
   }
+  
   timeAfterMove++;
 }
 
@@ -87,18 +128,27 @@ void keyPressed(){
   }else{
     if(keyCode == UP){
       player.pdir = new PVector(0, -1);
+      player.dir = new PVector(0, -1);
     }else if(keyCode == DOWN){
       player.pdir = new PVector(0, 1);
+      player.dir = new PVector(0, 1);
     }else if(keyCode == LEFT){
       player.pdir = new PVector(-1, 0);
+      player.dir = new PVector(-1, 0);
     }else if(keyCode == RIGHT){
       player.pdir = new PVector(1, 0);
+      player.dir = new PVector(1, 0);
     }
+  }
+  if(key == ' '){
+    projectiles.add(new Projectile(player.x, player.y, player.pdir));
   }
 }
 
 void keyReleased(){
-  player.pdir.mult(0);
+  if(key != ' '){
+    player.dir.mult(0);
+  }
 }
 
 void move(int xdir, int ydir){
@@ -114,18 +164,30 @@ void move(int xdir, int ydir){
 }
 
 void checkRooms(){
-  for(int i = 2; i < noOfRooms -2; i++){
-    for(int j = 2; j < noOfRooms -2; j++){
-      if(rooms[i][j] != null){
-        if(rooms[i][j].left && !rooms[i -1][j].right){
-          rooms[i -1][j].right = true;
-        }else if(rooms[i][j].right && !rooms[i +1][j].left){
-          rooms[i -1][j].left = true;
-        }else if(rooms[i][j].top && !rooms[i][j -1].bottom){
-          rooms[i -1][j].bottom = true;
-        }else if(rooms[i][j].bottom && !rooms[i][j +1].top){
-          rooms[i -1][j].top = true;
+  for(Room[] column: rooms){
+    for(Room room: column){
+      if(room != null){
+        if(room.left && rooms[room.x -1][room.y] != null && !rooms[room.x -1][room.y].right){
+          rooms[room.x -1][room.y].right = true;
+        }else if(room.right && rooms[room.x +1][room.y] != null && !rooms[room.x +1][room.y].left){
+          rooms[room.x +1][room.y].left = true;
+        }else if(room.top && rooms[room.x][room.y -1] != null && !rooms[room.x][room.y -1].bottom){
+          rooms[room.x][room.y -1].bottom = true;
+        }else if(room.bottom && rooms[room.x][room.y +1] != null && !rooms[room.x][room.y +1].top){
+          rooms[room.x][room.y +1].top = true;
         }
+      }
+    }
+  }
+}
+
+void checkCollisions(){
+  for(Enemy enemy: enemies){
+    for(Projectile projectile: projectiles){
+      if(((projectile.x - projectile.w * 0.5) < (enemy.x - enemy.w * 0.5) && (projectile.x + projectile.w * 0.5) > (enemy.x + enemy.w * 0.5)) 
+        ||(projectile.y - projectile.w * 0.5) < (enemy.y - enemy.w * 0.5) && (projectile.y + projectile.w * 0.5) > (enemy.y + enemy.w * 0.5)){
+        enemies.remove(enemy);
+        projectiles.remove(projectile);
       }
     }
   }

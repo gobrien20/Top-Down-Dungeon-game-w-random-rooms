@@ -6,9 +6,8 @@ class Room{
   float xshift = 0;
   float yshift = 0;
   boolean left, right, top, bottom;
-  float x;
-  float y;
-  Room(boolean left, boolean right, boolean top, boolean bottom, float x, float y){
+  int x, y;
+  Room(boolean left, boolean right, boolean top, boolean bottom, int x, int y){
     this.left = left;
     this.right = right;
     this.top = top;
@@ -25,25 +24,25 @@ class Room{
     noStroke();
     translate(xpos * xsize - (xsize * 2) + xshift, ypos * ysize - (ysize * 2) + yshift);
     rectMode(CORNERS);
-    if(left){
+    if(this.left){
       rect(0, 0, w, ysize * 0.5 - gap);
       rect(0, ysize * 0.5 + gap, w, ysize);
     }else{
       rect(0, 0, w, ysize);
     }
-    if(right){
+    if(this.right){
       rect(xsize - w, 0, xsize, ysize * 0.5 - gap);
       rect(xsize - w, ysize * 0.5 + gap, xsize, ysize);
     }else{
       rect(xsize - w, 0, xsize, ysize);
     }
-    if(top){
+    if(this.top){
       rect(0, 0, xsize * 0.5 - gap, w);
       rect(xsize *0.5 + gap, 0, xsize, w);
     }else{
       rect(0, 0, xsize, w);
     }
-    if(bottom){
+    if(this.bottom){
       rect(0, ysize - w, xsize *0.5 - gap, ysize);
       rect(xsize * 0.5 + gap, ysize -w, xsize, ysize);
     }else{
@@ -53,8 +52,8 @@ class Room{
   }
   
   void checkCollisions(){
-    if(player.x <= w ){
-      if (left && player.y < ysize * 0.5 + gap && player.y > ysize * 0.5 - gap){
+    if(player.x <= w){
+      if (this.left && player.y < (ysize * 0.5) + gap + (player.w * 0.5) && player.y > (ysize * 0.5) - gap - (player.w * 0.5)){
         isMovingx = true;
         xdir = 1;
         ydir = 0;
@@ -62,7 +61,7 @@ class Room{
         player.x = w;
       }
     }else if(player.x >= xsize - w - player.w){
-      if (right && player.y < ysize * 0.5 + gap && player.y > ysize * 0.5 - gap){
+      if (this.right && player.y < ysize * 0.5 + gap + (player.w * 0.5) && player.y > ysize * 0.5 - gap - (player.w * 0.5)){
         isMovingx = true;
         xdir = -1;
         ydir = 0;
@@ -70,7 +69,7 @@ class Room{
         player.x = xsize - w - player.w;
       }
     }else if(player.y <= w){
-      if (top && player.x < xsize * 0.5 + gap && player.x > xsize * 0.5 - gap){
+      if (this.top && player.x < xsize * 0.5 + gap + (player.w * 0.5) && player.x > xsize * 0.5 - gap - (player.w * 0.5)){
         isMovingy = true;
         xdir = 0;
         ydir = 1;
@@ -78,7 +77,7 @@ class Room{
         player.y = w;
       }
     }else if(player.y >= ysize - w - player.w){
-      if (bottom && player.x < xsize * 0.5 + gap && player.x > xsize * 0.5 - gap){
+      if (this.bottom && player.x < xsize * 0.5 + gap + (player.w * 0.5) && player.x > xsize * 0.5 - gap - (player.w * 0.5)){
         isMovingy = true;
         xdir = 0;
         ydir = -1;
