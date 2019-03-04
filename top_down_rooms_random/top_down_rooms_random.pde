@@ -184,8 +184,8 @@ void checkRooms(){
 void checkCollisions(){
   for(Enemy enemy: enemies){
     for(Projectile projectile: projectiles){
-      if(((projectile.x - projectile.w * 0.5) > (enemy.x - enemy.w * 0.5) && (projectile.x + projectile.w * 0.5) < (enemy.x + enemy.w * 0.5)) 
-        &&(projectile.y - projectile.w * 0.5) > (enemy.y - enemy.w * 0.5) && (projectile.y + projectile.w * 0.5) < (enemy.y + enemy.w * 0.5)){
+      if(((projectile.x - projectile.w * 0.5) >= (enemy.x - enemy.w * 0.5) && (projectile.x + projectile.w * 0.5) <= (enemy.x + enemy.w * 0.5)) 
+        &&(projectile.y - projectile.w * 0.5) >= (enemy.y - enemy.w * 0.5) && (projectile.y + projectile.w * 0.5) <= (enemy.y + enemy.w * 0.5)){
         enemies.remove(enemy);
         projectiles.remove(projectile);
       }
