@@ -2,6 +2,7 @@ class Enemy{
   float x, y;
   float w = 20;
   PVector movement = new PVector(0, 0);
+  boolean exists = true;
   
   Enemy(float x, float y){
     this.x = x;
@@ -55,5 +56,15 @@ class Enemy{
     }
     
     return new  PVector(dir_x, dir_y);
+  }
+  
+  void checkProjectiles(){
+    for(int j = projectiles.size() -1; j >= 0; j--){
+      if(((projectiles.get(j).x - projectiles.get(j).w * 0.5) >= (this.x - this.w * 0.5) && (projectiles.get(j).x + projectiles.get(j).w * 0.5) <= (this.x + this.w * 0.5)) 
+        &&(projectiles.get(j).y - projectiles.get(j).w * 0.5) >= (this.y - this.w * 0.5) && (projectiles.get(j).y + projectiles.get(j).w * 0.5) <= (this.y + this.w * 0.5)){
+        projectiles.remove(j);
+        exists = false;
+      }
+    }
   }
 }

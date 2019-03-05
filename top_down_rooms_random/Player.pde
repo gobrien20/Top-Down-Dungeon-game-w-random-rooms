@@ -3,6 +3,7 @@ class Player{
   float w = 20;
   PVector pdir = new PVector(0, -1);
   PVector dir = new PVector(0, 0);
+  int score = 0;
   
   Player(float x, float y){
     this.x = x;

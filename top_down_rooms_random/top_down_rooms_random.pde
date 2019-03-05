@@ -1,14 +1,27 @@
+Menu startMenu = new Menu();
+boolean newGame = true;
+
+Menu pauseMenu = new Menu();
+boolean paused = false;
+
 int noOfRooms = 10;
 float pixelsMoved = 0;
+
 boolean isMovingx = false;
 boolean isMovingy = false;
+
 int xdir, ydir;
+
 float shiftAmount = 10;
 int timeAfterMove = 60;
+
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
 Player player;
+
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+ArrayList<Item> items = new ArrayList<Item>();
+
 float xpositions[] = new float[2];
 float ypositions[] = new float[2];
 
@@ -24,6 +37,11 @@ void setup(){
     enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
   }
   
+  for(int i = 0; i < floor(random(5, 10)); i++){
+    float offset = random(-10, 10);
+    items.add(new Item(xpositions[floor(random(2))] + offset, ypositions[floor(random(2))] + offset));
+  }
+  
   for(int i = 0; i < noOfRooms; i++){
     createRooms();
   }
@@ -33,21 +51,55 @@ void setup(){
 void draw(){
   background(0);
   
-  checkCollisions();
-  
+  if(paused){
+    if(newGame){
+      startMenu.update();
+      startMenu.show();
+    }else{
+      pauseMenu.update();
+      pauseMenu.show();
+    }
+  }else{
+    checkMovement();
+    checkCollisions();
+    updateProjectiles();
+    player.update();
+    player.show();
+    updateEnemies();
+    updateRooms();
+  }
+}
+
+void updateProjectiles(){
   for(Projectile projectile: projectiles){
     projectile.update();
     projectile.show();
   }
-  
-  player.update();
-  player.show();
-  
-  for(Enemy enemy: enemies){
-    enemy.update();
-    enemy.show();
+}
+
+void updateEnemies(){
+  for(int i = enemies.size() -1; i >= 0; i--){
+    enemies.get(i).update();
+    if(enemies.get(i).exists){
+      enemies.get(i).show();
+    }else{
+      enemies.remove(i);
+    }
   }
-  
+}
+
+void updateItems(){
+  for(int i = items.size() - 1; i >= 0; i++){
+    items.get(i).update();
+    if(items.get(i).exists){
+      items.get(i).show();
+    }else{
+      items.remove(i);
+    }
+  }
+}
+
+void updateRooms(){
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
@@ -58,7 +110,9 @@ void draw(){
       }
     }
   }
-  
+}
+
+void checkMovement(){
   if(isMovingx){
     if(pixelsMoved < width){
       for(int i = enemies.size() - 1; i >= 0; i--){
@@ -72,11 +126,17 @@ void draw(){
       for(int i = 0; i < floor(random(5)); i ++){
         enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
       }
+      for(int i = 0; i < floor(random(5)); i ++){
+        items.add(new Item(xpositions[floor(random(2))], ypositions[floor(random(2))]));
+      }
     }
   }else if(isMovingy){
     if(pixelsMoved < height){
       for(int i = enemies.size() - 1; i >= 0; i--){
         enemies.remove(i);
+      }
+      for(int i = items.size() - 1; i >= 0; i--){
+        items.remove(i);
       }
       move(xdir, ydir);
     }else{
@@ -85,6 +145,9 @@ void draw(){
       pixelsMoved = 0;
       for(int i = 0; i < floor(random(5)); i ++){
         enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
+      }
+      for(int i = items.size() - 1; i >= 0; i--){
+        items.remove(i);
       }
     }
   }
@@ -142,6 +205,12 @@ void keyPressed(){
   }
   if(key == ' '){
     projectiles.add(new Projectile(player.x, player.y, player.pdir));
+  }else if(key == 'p' || key == 'P'){
+    if(paused){
+      paused = false;
+    }else{
+      paused = true;
+    }
   }
 }
 
@@ -182,13 +251,9 @@ void checkRooms(){
 }
 
 void checkCollisions(){
-  for(Enemy enemy: enemies){
-    for(Projectile projectile: projectiles){
-      if(((projectile.x - projectile.w * 0.5) >= (enemy.x - enemy.w * 0.5) && (projectile.x + projectile.w * 0.5) <= (enemy.x + enemy.w * 0.5)) 
-        &&(projectile.y - projectile.w * 0.5) >= (enemy.y - enemy.w * 0.5) && (projectile.y + projectile.w * 0.5) <= (enemy.y + enemy.w * 0.5)){
-        enemies.remove(enemy);
-        projectiles.remove(projectile);
-      }
+  for(int i = enemies.size() -1; i >= 0; i--){
+    if(!enemies.get(i).exists){
+      enemies.get(i).checkProjectiles();
     }
   }
 }
