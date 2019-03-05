@@ -1,3 +1,9 @@
+Menu startMenu = new Menu();
+boolean newGame = false;
+
+Menu pauseMenu = new Menu();
+boolean paused = true;
+
 int noOfRooms = 10;
 float pixelsMoved = 0;
 
@@ -9,13 +15,13 @@ int xdir, ydir;
 float shiftAmount = 10;
 int timeAfterMove = 60;
 
-boolean paused = false;
-
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
 Player player;
+
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
 ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 ArrayList<Item> items = new ArrayList<Item>();
+
 float xpositions[] = new float[2];
 float ypositions[] = new float[2];
 
@@ -45,21 +51,40 @@ void setup(){
 void draw(){
   background(0);
   
-  checkCollisions();
-  
+  if(paused){
+    if(newGame){
+      startMenu.update();
+      startMenu.show();
+    }else{
+      pauseMenu.update();
+      pauseMenu.show();
+    }
+  }else{
+    checkMovement();
+    checkCollisions();
+    updateProjectiles();
+    player.update();
+    player.show();
+    updateEnemies();
+    updateRooms();
+  }
+}
+
+void updateProjectiles(){
   for(Projectile projectile: projectiles){
     projectile.update();
     projectile.show();
   }
-  
-  player.update();
-  player.show();
-  
+}
+
+void updateEnemies(){
   for(Enemy enemy: enemies){
     enemy.update();
     enemy.show();
   }
-  
+}
+
+void updateItems(){
   for(int i = items.size() - 1; i >= 0; i++){
     items.get(i).update();
     if(items.get(i).exists){
@@ -68,10 +93,6 @@ void draw(){
       items.remove(i);
     }
   }
-  
-  updateRooms();  
-  checkMovement();
-  
 }
 
 void updateRooms(){
