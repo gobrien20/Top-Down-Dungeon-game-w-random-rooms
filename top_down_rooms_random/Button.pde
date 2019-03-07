@@ -17,7 +17,9 @@ class Button{
     rectMode(CORNER);
     rect(x, y, w, h);
     textSize(26);
-    text(text, x + 50, y + 25);
+    fill(255);
+    textAlign(CENTER);
+    text(text, width * 0.5, y + 45);
     popMatrix();
   }
 }

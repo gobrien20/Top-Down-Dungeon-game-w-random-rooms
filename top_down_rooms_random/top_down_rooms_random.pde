@@ -4,7 +4,7 @@ Menu startMenu = new Menu("Start");
 boolean newGame = true;
 
 Menu pauseMenu = new Menu("Paused");
-boolean paused = false;
+boolean paused = true;
 
 int noOfRooms = 10;
 float pixelsMoved = 0;
@@ -53,12 +53,10 @@ void setup(){
 void draw(){
   background(0);
   
-  if(paused){
-    if(newGame){
-      startMenu.show();
-    }else{
-      pauseMenu.show();
-    }
+  if(newGame){
+    startMenu.show();
+  }else if(paused){
+    pauseMenu.show();
   }else{
     checkMovement();
     checkCollisions();
@@ -66,6 +64,7 @@ void draw(){
     player.update();
     player.show();
     updateEnemies();
+    updateItems();
     updateRooms();
   }
 }
@@ -89,7 +88,7 @@ void updateEnemies(){
 }
 
 void updateItems(){
-  for(int i = items.size() - 1; i >= 0; i++){
+  for(int i = items.size() - 1; i >= 0; i--){
     items.get(i).update();
     if(items.get(i).exists){
       items.get(i).show();
