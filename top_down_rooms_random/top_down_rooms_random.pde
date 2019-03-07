@@ -1,7 +1,9 @@
-Menu startMenu = new Menu();
+PrintWriter output;
+
+Menu startMenu = new Menu("Start");
 boolean newGame = true;
 
-Menu pauseMenu = new Menu();
+Menu pauseMenu = new Menu("Paused");
 boolean paused = false;
 
 int noOfRooms = 10;
@@ -53,10 +55,8 @@ void draw(){
   
   if(paused){
     if(newGame){
-      startMenu.update();
       startMenu.show();
     }else{
-      pauseMenu.update();
       pauseMenu.show();
     }
   }else{
@@ -220,6 +220,44 @@ void keyReleased(){
   }
 }
 
+void mouseClicked(){
+  if(paused){
+    if(newGame){
+      for(Button button: startMenu.buttons){
+        if(mouseX > button.x && mouseX < button.x + button.w
+        && mouseY > button.y && mouseY < button.y + button.h){
+          button.clicked = true;
+          if(button.text == "New Game"){
+            newGame = false;
+            paused = false;
+          }else if(button.text =="Load Game"){
+            newGame = false;
+            paused = false;
+          }
+        }
+      }
+    }
+    for(Button button: pauseMenu.buttons){
+      if(mouseX > button.x && mouseX < button.x + button.w
+      && mouseY > button.y && mouseY < button.y + button.h){
+        button.clicked = true;
+        if(button.text == "Continue"){
+          paused = false;
+        }
+        else if(button.text == "New Game"){
+          newGame = false;
+          paused = false;
+        }else if(button.text =="Save Game"){
+          saveGame();
+          paused = false;
+        }else if(button.text == "Quit"){
+          exit();
+        }
+      }
+    }
+  }
+}
+
 void move(int xdir, int ydir){
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
@@ -256,4 +294,27 @@ void checkCollisions(){
       enemies.get(i).checkProjectiles();
     }
   }
+}
+
+void saveGame(){
+  output = createWriter("saveData.txt");
+  output.println(startMenu);
+  output.println(newGame);
+  
+  output.println(pauseMenu);
+  output.println(paused);
+  
+  output.println(noOfRooms);
+  output.println(pixelsMoved);
+  
+  output.println(isMovingx);
+  output.println(isMovingy);
+  
+  output.println(rooms);
+  output.println(player);
+  
+  output.println(projectiles);
+  output.println(enemies);
+  output.println(items);
+  output.close();
 }
