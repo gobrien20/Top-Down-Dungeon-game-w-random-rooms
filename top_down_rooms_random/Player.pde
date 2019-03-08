@@ -4,10 +4,14 @@ class Player{
   PVector pdir = new PVector(0, -1);
   PVector dir = new PVector(0, 0);
   int score = 0;
+  int lives;
+  float strength = 10;
+  float deltaTime = 0;
   
   Player(float x, float y){
     this.x = x;
     this.y = y;
+    lives = 3;
   }
   
   void show(){
@@ -24,6 +28,12 @@ class Player{
     if(isMovingx || isMovingy){
       doorShift();
     }
+    
+    if(deltaTime <= 0){
+      strength = 10;
+    }
+    
+    deltaTime -= 0.001;
   }
   
   void walk(){

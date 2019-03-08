@@ -7,6 +7,7 @@ class Room{
   float yshift = 0;
   boolean left, right, top, bottom;
   int x, y;
+  
   Room(boolean left, boolean right, boolean top, boolean bottom, int x, int y){
     this.left = left;
     this.right = right;

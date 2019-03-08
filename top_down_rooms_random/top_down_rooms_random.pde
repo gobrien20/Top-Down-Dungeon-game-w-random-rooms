@@ -17,7 +17,16 @@ int xdir, ydir;
 float shiftAmount = 10;
 int timeAfterMove = 60;
 
+Boss boss;
+
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
+
+PVector[] possibleRooms;
+
+PVector currentRoom;
+
+PVector bossRoom;
+
 Player player;
 
 ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -29,18 +38,23 @@ float ypositions[] = new float[2];
 
 void setup(){
   size(640, 480);
-  player = new Player(width * 0.5, height * 0.5);
   xpositions[0] = 50;
   xpositions[1] = width - 50;
   ypositions[0] = 50;
   ypositions[1] = height - 50;
   
+  startNewGame();
+}
+
+void startNewGame(){
+  player = new Player(width * 0.5, height * 0.5);
+  
   for(int i = 0; i < floor(random(5, 10)); i ++){
     enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
   }
   
-  for(int i = 0; i < floor(random(5, 10)); i++){
-    float offset = random(-10, 10);
+  for(int i = 0; i < floor(random(3)); i++){
+    float offset = random(-30, 30);
     items.add(new Item(xpositions[floor(random(2))] + offset, ypositions[floor(random(2))] + offset));
   }
   
@@ -48,6 +62,20 @@ void setup(){
     createRooms();
   }
   //checkRooms();
+  
+  currentRoom = new PVector(floor(noOfRooms * 0.5), floor(noOfRooms * 0.5))
+  
+  for(int i = 0; i < noOfRooms; i++){
+    for(int j = 0; j < noOfRooms; j++){
+      if(rooms[i][j] != null){
+        possibleRooms.push(new PVector(i, j));
+      }
+    }
+  }
+  
+  bossRoom = new PVector(floor(random(possibleRooms.length)).x, floor(random(possibleRooms.length)).y);
+  
+  boss = new Boss(width * 0.5, height * 0.5);
 }
 
 void draw(){
@@ -64,6 +92,10 @@ void draw(){
     player.update();
     player.show();
     updateEnemies();
+    if(currentRoom == bossRoom){
+      boss.update();
+      boss.show();
+    }
     updateItems();
     updateRooms();
   }
@@ -79,6 +111,10 @@ void updateProjectiles(){
 void updateEnemies(){
   for(int i = enemies.size() -1; i >= 0; i--){
     enemies.get(i).update();
+    enemies.get(i).checkPlayer(player);
+    if(player.lives <= 0){
+      startNewGame();
+    }
     if(enemies.get(i).exists){
       enemies.get(i).show();
     }else{
@@ -122,10 +158,10 @@ void checkMovement(){
       timeAfterMove = 0;
       isMovingx = false;
       pixelsMoved = 0;
-      for(int i = 0; i < floor(random(5)); i ++){
+      for(int i = 0; i < floor(random(5)); i++){
         enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
       }
-      for(int i = 0; i < floor(random(5)); i ++){
+      for(int i = 0; i < floor(random(5)); i++){
         items.add(new Item(xpositions[floor(random(2))], ypositions[floor(random(2))]));
       }
     }
@@ -229,9 +265,11 @@ void mouseClicked(){
           if(button.text == "New Game"){
             newGame = false;
             paused = false;
+            startNewGame();
           }else if(button.text =="Load Game"){
             newGame = false;
             paused = false;
+            startNewGame();
           }
         }
       }
@@ -246,9 +284,9 @@ void mouseClicked(){
         else if(button.text == "New Game"){
           newGame = false;
           paused = false;
+          startNewGame();
         }else if(button.text =="Save Game"){
           saveGame();
-          paused = false;
         }else if(button.text == "Quit"){
           exit();
         }

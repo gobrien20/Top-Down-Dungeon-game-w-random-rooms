@@ -25,7 +25,8 @@ class Item{
     if(x - (w * 0.5) >= player.x - (player.w * 0.5) && x + (w * 0.5) <= player.x + (player.w * 0.5)
     && y - (w * 0.5) >= player.y - (player.w * 0.5) && y + (w * 0.5) <= player.y + (player.w * 0.5)){
        exists = false;
-       player.score += 10;
+       player.strength = 50;
+       player.deltaTime = 5;
     }
   }
 }
