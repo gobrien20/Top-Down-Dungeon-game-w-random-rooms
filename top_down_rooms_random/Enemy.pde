@@ -77,5 +77,6 @@ class Enemy{
     if(player.x - (player.w * 0.5) >= this.x - (this.w * 0.5) && player.x + (player.w * 0.5) <= this.x + (this.w *0.5) 
     && player.y - (player.w * 0.5) >= this.y - (this.w * 0.5) && player.y + (player.w * 0.5) <= this.y + (this.w * 0.5)){
       player.lives--;
+    }
   }
 }

@@ -21,7 +21,7 @@ Boss boss;
 
 Room[][] rooms = new Room[noOfRooms][noOfRooms];
 
-PVector[] possibleRooms;
+ArrayList<PVector> possibleRooms = new ArrayList<PVector>();
 
 PVector currentRoom;
 
@@ -49,12 +49,28 @@ void setup(){
 void startNewGame(){
   player = new Player(width * 0.5, height * 0.5);
   
+  for(int i = enemies.size() -1; i >= 0; i++){
+    enemies.remove(i);
+  }
+  
+  for(int i = items.size() -1; i >= 0; i++){
+    items.remove(i);
+  }
+  
+  for(int i = projectiles.size() -1; i >= 0; i++){
+    projectiles.remove(i);
+  }
+  
+  for(int i = possibleRooms.size() -1; i >= 0; i++){
+    possibleRooms.remove(i);
+  }
+  
   for(int i = 0; i < floor(random(5, 10)); i ++){
     enemies.add(new Enemy(xpositions[floor(random(2))], ypositions[floor(random(2))]));
   }
   
   for(int i = 0; i < floor(random(3)); i++){
-    float offset = random(-30, 30);
+    float offset = random(-20, 20);
     items.add(new Item(xpositions[floor(random(2))] + offset, ypositions[floor(random(2))] + offset));
   }
   
@@ -63,17 +79,19 @@ void startNewGame(){
   }
   //checkRooms();
   
-  currentRoom = new PVector(floor(noOfRooms * 0.5), floor(noOfRooms * 0.5))
+  currentRoom = new PVector(floor(noOfRooms * 0.5), floor(noOfRooms * 0.5));
   
   for(int i = 0; i < noOfRooms; i++){
     for(int j = 0; j < noOfRooms; j++){
       if(rooms[i][j] != null){
-        possibleRooms.push(new PVector(i, j));
+        possibleRooms.add(new PVector(i, j));
       }
     }
   }
   
-  bossRoom = new PVector(floor(random(possibleRooms.length)).x, floor(random(possibleRooms.length)).y);
+  int index = floor(random(possibleRooms.size()));
+  
+  bossRoom = new PVector(possibleRooms.get(index).x, possibleRooms.get(index).y);
   
   boss = new Boss(width * 0.5, height * 0.5);
 }
@@ -164,6 +182,11 @@ void checkMovement(){
       for(int i = 0; i < floor(random(5)); i++){
         items.add(new Item(xpositions[floor(random(2))], ypositions[floor(random(2))]));
       }
+      if(xdir < 0){
+        currentRoom = new PVector(currentRoom.x + 1, currentRoom.y);
+      }else{
+        currentRoom = new PVector(currentRoom.x - 1, currentRoom.y);
+      }
     }
   }else if(isMovingy){
     if(pixelsMoved < height){
@@ -183,6 +206,11 @@ void checkMovement(){
       }
       for(int i = items.size() - 1; i >= 0; i--){
         items.remove(i);
+      }
+      if(ydir < 0){
+        currentRoom = new PVector(currentRoom.x, currentRoom.y + 1);
+      }else{
+        currentRoom = new PVector(currentRoom.x, currentRoom.y - 1);
       }
     }
   }

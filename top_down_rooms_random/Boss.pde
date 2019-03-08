@@ -1,14 +1,13 @@
-class Enemy{
+class Boss{
   float x, y;
   float w = 50;
   PVector movement = new PVector(0, 0);
   boolean exists = true;
   float life = 1000;
   
-  Enemy(float x, float y){
+  Boss(float x, float y){
     this.x = x;
     this.y = y;
-    movement = getMovement();
   }
   
   void show(){
@@ -42,5 +41,6 @@ class Enemy{
     if(player.x - (player.w * 0.5) >= this.x - (this.w * 0.5) && player.x + (player.w * 0.5) <= this.x + (this.w *0.5) 
     && player.y - (player.w * 0.5) >= this.y - (this.w * 0.5) && player.y + (player.w * 0.5) <= this.y + (this.w * 0.5)){
       player.lives--;
+    }
   }
 }
